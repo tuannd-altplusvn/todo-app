@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import sweetalert from 'sweetalert';
 import TodoList from '@/components/TodoList'
 import CreateTodo from '@/components/CreateTodo'
 export default {
@@ -42,8 +43,9 @@ export default {
     },
 
     methods: {
-        addTodo(todo) {
-            this.todos.push(todo)
+        addTodo(newTodo) {
+            this.todos.push(newTodo)
+            sweetalert('Success!', 'To-Do created!', 'success');
         }
     }
 }
