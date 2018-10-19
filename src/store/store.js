@@ -10,11 +10,12 @@ const TODO_EDIT = 'todo_edit'
 
 const state = {
 	todos: [
-        { title: 'Todo A', project: 'Project A', done: false },
-        { title: 'Todo B', project: 'Project B', done: false },
-        { title: 'Todo C', project: 'Project C', done: true },
-        { title: 'Todo D', project: 'Project D', done: false },
-    ]
+        { id: 0, title: 'Todo A', project: 'Project A', done: false },
+        { id: 1, title: 'Todo B', project: 'Project B', done: false },
+        { id: 2, title: 'Todo C', project: 'Project C', done: true },
+        { id: 3, title: 'Todo D', project: 'Project D', done: false },
+    ],
+    autocrement: 4
 }
 
 const mutations = {
@@ -22,22 +23,17 @@ const mutations = {
 		return state.todos
 	},
 	[TODO_ADD](state, todo) {
-		return state.todos = [todo, ...state.todos]
+		state.todos = [todo, ...state.todos]
+		state.autocrement = state.autocrement + 1
 	},
-	[TODO_TOGGLE_STATUS](state, todo) {
-		let todos = state.todos
-		let index = todos.indexOf(todo)
-		return state.todos = state.todos[index].done = true
+	[TODO_TOGGLE_STATUS](state, id) {
+		return state.todos = state.todos.map((todo) => todo.id === id ? { ...todo, done: !todo.done } : todo)
 	},
-	[TODO_DELETE](state, todo) {
-		let todos = state.todos
-		let index = todos.indexOf(todo)
-		todos.splice(index, 1)
-
-		return state.todos = todos
+	[TODO_DELETE](state, id) {
+		return state.todos = state.todos.filter((todo) => todo.id !== id)
 	},
-	[TODO_EDIT](state, todo) {
-
+	[TODO_EDIT](state, editTodo) {
+		return state.todos = state.todos.map((todo) => todo.id === editTodo.id ? { ...todo, title:editTodo.title, project:editTodo.project } : todo)
 	}
 }
 
@@ -48,14 +44,14 @@ const actions = {
 	actionTodoAdd({ commit }, todo) {
 		return commit(TODO_ADD, todo)
 	},
-	actionTodoChangeStatus({ commit }, todo) {
-		return commit(TODO_TOGGLE_STATUS, todo)
+	actionTodoChangeStatus({ commit }, id) {
+		return commit(TODO_TOGGLE_STATUS, id)
 	},
-	actionTodoDelete({ commit }, todo) {
-		return commit(TODO_DELETE, todo)
+	actionTodoDelete({ commit }, id) {
+		return commit(TODO_DELETE, id)
 	},
-	actionTodoEdit({ commit }, todo) {
-		return commit(TODO_EDIT, todo)
+	actionTodoEdit({ commit }, editTodo) {
+		return commit(TODO_EDIT, editTodo)
 	}
 }
 
