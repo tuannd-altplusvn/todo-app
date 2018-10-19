@@ -15,7 +15,7 @@
 						<input type="text" ref="project" defaultValue="" v-model="projectName">
 					</div>
 					<div class="ui two button attached buttons">
-						<button class="ui basic blue button" v-on:click="sendForm()">
+						<button class="ui basic blue button" v-on:click="handleAddTodo">
 							Add
 						</button>
 						<button class="ui basic red button" v-on:click="closeForm">
@@ -29,12 +29,19 @@
 </template>
 
 <script>
+	import sweetalert from 'sweetalert'
+	
 	export default {
 		data() {
 			return {
 				titleName: '',
 				projectName: '',
 				isCreating: false 
+			}
+		},
+		computed: {
+			todos() {
+				return this.$store.state.storeTodo.todos
 			}
 		},
 		methods: {
@@ -54,6 +61,21 @@
 						project,
 						done: false
 					})
+				}
+
+				this.isCreating = false
+				this.titleName = ''
+				this.projectName = ''
+			},
+			handleAddTodo(event) {
+				event.preventDefault()
+
+				let title = this.titleName
+				let project = this.projectName
+
+				if (title.length > 0 && project.length > 0) {
+					this.$store.dispatch('actionTodoAdd', { title, project, done: false })
+					sweetalert('Success!', 'To-Do created!', 'success');
 				}
 
 				this.isCreating = false
