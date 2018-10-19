@@ -11,7 +11,7 @@
 				<span class="right floated edit icon" v-on:click="showForm">
 					<i class="edit icon"></i>
 				</span>
-				<div class="right floated trash icon" v-on:click="handleDelete(todo)">
+				<div class="right floated trash icon" v-on:click="handleDelete(todo.id)">
 					<i class="trash icon"></i>
 				</div>
 			</div>
@@ -28,7 +28,7 @@
 					<input type="text" v-model="todo.project">
 				</div>
 				<div class="ui two button attached buttons">
-					<button class="ui basic blue button" v-on:click="hideForm">
+					<button class="ui basic blue button" v-on:click="handleEdit">
 						Close X
 					</button>
 				</div>
@@ -37,7 +37,7 @@
 		<div class="ui bottom attached green basic button" v-show="!isEditing && todo.done">
 			Completed
 		</div>
-		<div class="ui bottom attached red basic button" v-show="!isEditing && !todo.done" v-on:click="handleChangeStatus(todo)">
+		<div class="ui bottom attached red basic button" v-show="!isEditing && !todo.done" v-on:click="handleChangeStatus(todo.id)">
 			Complete
 		</div>
 	</div>
@@ -63,7 +63,7 @@
 			hideForm() {
 				this.isEditing = false
 			},
-			handleDelete(todo) {
+			handleDelete(id) {
 				swal({
 			        title: 'Are you sure?',
 			        text: 'This To-Do will be permanently deleted!',
@@ -76,21 +76,27 @@
 			        closeModal: false,
 		      	}).then((willDelete) => {
 				  	if (willDelete) {
-				        this.$store.dispatch('actionTodoDelete', todo)
+				        this.$store.dispatch('actionTodoDelete', id)
 				        sweetalert('Deleted!', 'Your To-Do has been deleted.', 'success');
 					} else {
 					    swal("Your action was rollback!");
 					}
 				})
 			},
-			handleChangeStatus(todo) {
-				this.$store.dispatch('actionTodoChangeStatus', todo)
+			handleChangeStatus(id) {
+				this.$store.dispatch('actionTodoChangeStatus', id)
 				sweetalert('Success!', 'To-Do completed!', 'success');
+			},
+			handleEdit(event) {
+				event.preventDefault()
+				this.$store.dispatch('actionTodoEdit', this.todo)
+				this.isEditing = false
+
 			}
 		}
 	}
 </script>
 
 <style type="scss" scoped>
-	
+
 </style>

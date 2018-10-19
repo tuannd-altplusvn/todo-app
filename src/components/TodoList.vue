@@ -5,7 +5,7 @@
 			<p>Pending Tasks: {{ todos.filter(todo => { return todo.done === false }).length }}</p>
 		</div>
 		<hr>
-		<todo v-for="(todo, index) in todos" v-bind:todo="todo" :key="index" :todo.sync="todo"></todo>
+		<todo v-for="(todo, index) in todos" v-bind:todo="todo" :key="todo.id" :todo.sync="todo"></todo>
 	</div>
 </template>
 
@@ -19,7 +19,7 @@
 			Todo,
 		},
 		methods: {
-			 
+
 		}
 	}
 </script>
