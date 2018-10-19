@@ -11,7 +11,7 @@
 				<span class="right floated edit icon" v-on:click="showForm">
 					<i class="edit icon"></i>
 				</span>
-				<div class="right floated trash icon" v-on:click="deleteTodo(todo)">
+				<div class="right floated trash icon" v-on:click="handleDelete(todo)">
 					<i class="trash icon"></i>
 				</div>
 			</div>
@@ -37,19 +37,24 @@
 		<div class="ui bottom attached green basic button" v-show="!isEditing && todo.done">
 			Completed
 		</div>
-		<div class="ui bottom attached red basic button" v-show="!isEditing && !todo.done" v-on:click="completeTodo(todo)">
+		<div class="ui bottom attached red basic button" v-show="!isEditing && !todo.done" v-on:click="handleChangeStatus(todo)">
 			Complete
 		</div>
 	</div>
 </template>
 
 <script>
+	import sweetalert from 'sweetalert';
+
 	export default {
 		props: ['todo', 'index'],
 		data() {
 			return {
 				isEditing: false,
 			}
+		},
+		computed: {
+
 		},
 		methods: {
 			showForm() {
@@ -58,11 +63,29 @@
 			hideForm() {
 				this.isEditing = false
 			},
-			deleteTodo(todo) {
-				this.$emit('delete-todo', todo)
+			handleDelete(todo) {
+				swal({
+			        title: 'Are you sure?',
+			        text: 'This To-Do will be permanently deleted!',
+			        icon: 'warning',
+			        buttons: true,
+		        	dangerMode: true,
+			        confirm: {
+			        	text: 'Yes, delete it!',
+			        },
+			        closeModal: false,
+		      	}).then((willDelete) => {
+				  	if (willDelete) {
+				        this.$store.dispatch('actionTodoDelete', todo)
+				        sweetalert('Deleted!', 'Your To-Do has been deleted.', 'success');
+					} else {
+					    swal("Your action was rollback!");
+					}
+				})
 			},
-			completeTodo(todo) {
-				this.$emit('complete-todo', todo)
+			handleChangeStatus(todo) {
+				this.$store.dispatch('actionTodoChangeStatus', todo)
+				sweetalert('Success!', 'To-Do completed!', 'success');
 			}
 		}
 	}
